@@ -1,0 +1,15 @@
+{
+  "name": "javatypegenerator",
+  "version": "1.0.0",
+  "description": "Generates Typescript definition files(d.ts) from java code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maxsshole",
+  "license": "MIT",
+  "dependencies": {
+    "java-parser": "^1.0.2"
+  },
+  "type": "module"
+}

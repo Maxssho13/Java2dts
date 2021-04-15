@@ -14,13 +14,6 @@ let intext = readFileSync(process.argv[2], "utf8");
 
 const cst = parse(intext);
 
-const toTSType = type => {
-  switch (type) {
-    case "Void":
-      return "void ";
-  }
-};
-
 class Visitor extends BaseJavaCstVisitorWithDefaults {
   constructor() {
     super();
@@ -981,6 +974,9 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   typeBound(ctx) {
+    if (ctx.Extends) {
+      return `extends ${this.visitChildren(ctx)}`;
+    }
     return this.visitChildren(ctx);
   }
 
@@ -989,11 +985,16 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   typeParameter(ctx) {
-    return this.visitChildren(ctx);
+    return this.visitChildren(ctx) + ",";
   }
 
   typeParameterList(ctx) {
-    return this.visitChildren(ctx);
+    let typeList = this.visitChildren(ctx);
+    // remove last comma
+    return (
+      typeList.substring(0, typeList.lastIndexOf(",")) +
+      typeList.substring(typeList.lastIndexOf(",") + 1)
+    );
   }
 
   typeParameterModifier(ctx) {
@@ -1001,7 +1002,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   typeParameters(ctx) {
-    return this.visitChildren(ctx);
+    return `<${this.visitChildren(ctx)}>`;
   }
 
   typeVariable(ctx) {

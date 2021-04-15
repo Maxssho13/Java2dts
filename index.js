@@ -1,15 +1,11 @@
 import { readFileSync, existsSync } from "fs";
 import { parse, BaseJavaCstVisitorWithDefaults } from "java-parser";
 
-if (process.argv.length < 3) {
-  console.error("Java2dts: Must supply input file.");
+if (!existsSync(process.argv?.[2])) {
+  console.error("Java2dts: Must supply proper input file");
   process.exit(1);
 }
 
-if (!existsSync(process.argv[2])) {
-  console.error(`Java2dts: Supplied file ${process.argv[2]} does not exist`);
-  process.exit(1);
-}
 let intext = readFileSync(process.argv[2], "utf8");
 
 const cst = parse(intext);

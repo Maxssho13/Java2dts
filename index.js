@@ -1,10 +1,16 @@
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { parse, BaseJavaCstVisitorWithDefaults } from "java-parser";
 
-// some random decomps
-let intext = readFileSync("tests/EntityPlayerSP.txt", "utf8");
-intext = readFileSync("tests/ChannelOutboundHandler.txt", "utf8");
-// intext = readFileSync("tests/Packet.txt", "utf8");
+if (process.argv.length < 3) {
+  console.error("Java2dts: Must supply input file.");
+  process.exit(1);
+}
+
+if (!existsSync(process.argv[2])) {
+  console.error(`Java2dts: Supplied file ${process.argv[2]} does not exist`);
+  process.exit(1);
+}
+let intext = readFileSync(process.argv[2], "utf8");
 
 const cst = parse(intext);
 
@@ -155,7 +161,9 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
 
   result(ctx) {
     let resultStr = "";
+    // handle when return value is void
     if (ctx?.Void) return `void${this.visitChildren(ctx)}`;
+
     return this.visitChildren(ctx);
   }
 

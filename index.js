@@ -10,6 +10,13 @@ let intext = readFileSync(process.argv[2], "utf8");
 
 const cst = parse(intext);
 
+const removeLastComma = str => {
+  return (
+    str.substring(0, str.lastIndexOf(",")) +
+    str.substring(str.lastIndexOf(",") + 2)
+  );
+};
+
 class Visitor extends BaseJavaCstVisitorWithDefaults {
   constructor() {
     super();
@@ -100,11 +107,11 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   typeIdentifier(ctx) {
-    return `${this.visitChildren(ctx)}${ctx.Identifier[0].image} `;
+    return `${this.visitChildren(ctx)}${ctx.Identifier[0].image}`;
   }
 
   classBody(ctx) {
-    return `{\n${this.visitChildren(ctx)}}`;
+    return ` {\n${this.visitChildren(ctx)}}`;
   }
 
   classBodyDeclaration(ctx) {
@@ -149,7 +156,6 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   result(ctx) {
-    let resultStr = "";
     // handle when return value is void
     if (ctx?.Void) return `void${this.visitChildren(ctx)}`;
 
@@ -161,11 +167,11 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   formalParameterList(ctx) {
-    return this.visitChildren(ctx).replace(/(?<!:) (?=[A-z])/g, ", ");
+    return removeLastComma(this.visitChildren(ctx));
   }
 
   formalParameter(ctx) {
-    return this.visitChildren(ctx);
+    return this.visitChildren(ctx) + ", ";
   }
 
   variableParaRegularParameter(ctx) {
@@ -187,7 +193,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   unannClassType(ctx) {
     return `${
       ctx.Identifier[0].image === "String" ? "string" : ctx.Identifier[0].image
-    } ${this.visitChildren(ctx)}`;
+    }${this.visitChildren(ctx)}`;
   }
 
   variableDeclaratorId(ctx) {
@@ -326,7 +332,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   classType(ctx) {
-    return `${ctx.Identifier[0].image} `;
+    return `${ctx.Identifier[0].image}`;
   }
 
   constantDeclaration(ctx) {
@@ -902,7 +908,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   superclass(ctx) {
-    return `extends ${this.visitChildren(ctx)}`;
+    return ` extends ${this.visitChildren(ctx)}`;
   }
 
   superinterfaces(ctx) {
@@ -985,12 +991,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   typeParameterList(ctx) {
-    let typeList = this.visitChildren(ctx);
-    // remove last comma
-    return (
-      typeList.substring(0, typeList.lastIndexOf(",")) +
-      typeList.substring(typeList.lastIndexOf(",") + 1)
-    );
+    return removeLastComma(this.visitChildren(ctx));
   }
 
   typeParameterModifier(ctx) {
@@ -1010,8 +1011,8 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   unannPrimitiveType(ctx) {
-    if (ctx?.Boolean) return "boolean ";
-    return `${this.visitChildren(ctx)} `;
+    if (ctx?.Boolean) return "boolean";
+    return `${this.visitChildren(ctx)}`;
   }
 
   unannPrimitiveTypeWithOptionalDimsSuffix(ctx) {

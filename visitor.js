@@ -161,7 +161,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   formalParameter(ctx) {
-    return this.visitChildren(ctx) + ", ";
+    return this.visitChildren(ctx) + ",";
   }
 
   variableParaRegularParameter(ctx) {
@@ -950,15 +950,15 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   typeArgument(ctx) {
-    return this.visitChildren(ctx);
+    return this.visitChildren(ctx) + ",";
   }
 
   typeArgumentList(ctx) {
-    return this.visitChildren(ctx);
+    return removeLastComma(this.visitChildren(ctx));
   }
 
   typeArguments(ctx) {
-    return this.visitChildren(ctx);
+    return `<${this.visitChildren(ctx)}>`;
   }
 
   typeArgumentsOrDiamond(ctx) {

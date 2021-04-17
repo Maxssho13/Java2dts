@@ -1070,7 +1070,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   wildcard(ctx) {
-    return this.visitChildren(ctx);
+    return "any";
   }
 
   wildcardBounds(ctx) {

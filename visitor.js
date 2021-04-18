@@ -893,8 +893,9 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
     return this.visitChildren(ctx);
   }
 
+  // TODO: this probably shouldn't new line, but since its a classMemberDeclaration it automatically does
   staticInitializer(ctx) {
-    return this.visitChildren(ctx);
+    return "";
   }
 
   superclass(ctx) {

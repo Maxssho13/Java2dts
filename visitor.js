@@ -1,11 +1,5 @@
 import { BaseJavaCstVisitorWithDefaults } from "java-parser";
-
-const removeLastComma = str => {
-  return (
-    str.substring(0, str.lastIndexOf(",")) +
-    str.substring(str.lastIndexOf(",") + 2)
-  );
-};
+import { removeLastComma } from "./utils.js";
 
 class Visitor extends BaseJavaCstVisitorWithDefaults {
   constructor() {

@@ -1,10 +1,12 @@
 import { BaseJavaCstVisitorWithDefaults } from "java-parser";
+import { VisitorState } from "./visitorState.js";
 import { removeLastComma } from "./utils.js";
 
 class Visitor extends BaseJavaCstVisitorWithDefaults {
   constructor() {
     super();
     this.validateVisitor();
+    this.state = new VisitorState();
   }
 
   visit(cstNode, param) {
@@ -29,11 +31,8 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
     }
 
     if (cstNode.tokenType) {
-      // return cstNode.image + " ";
       return "";
     }
-
-    // console.log(`${cstNode.name} ${util.inspect(cstNode.children, { depth: 1 })}`);
 
     return this[cstNode.name](cstNode.children, param);
   }
@@ -87,6 +86,8 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   normalClassDeclaration(ctx) {
+    this.state.currentClass =
+      ctx.typeIdentifier[0].children.Identifier[0].image;
     return `class ${this.visitChildren(ctx)}`;
   }
 
@@ -469,7 +470,7 @@ class Visitor extends BaseJavaCstVisitorWithDefaults {
   }
 
   extendsInterfaces(ctx) {
-    return `extends ${this.visitChildren(ctx)}`;
+    return ` extends ${this.visitChildren(ctx)}`;
   }
 
   fieldDeclaration(ctx) {
